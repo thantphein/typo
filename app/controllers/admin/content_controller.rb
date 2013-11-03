@@ -6,6 +6,39 @@ class Admin::ContentController < Admin::BaseController
 
   cache_sweeper :blog_sweeper
 
+  def merge
+    if not current_user.admin?
+        flash[:error] = "You do not have the proper privileges to perform that action."
+        redirect_to '/'
+        return
+    elsif params[:merge_with] == params[:id]
+        flash[:error] = "Error: Merging same article."
+        redirect_to '/admin/content'
+        return
+    end
+
+    mergeArticle = Article.find_by_id(params[:id])
+    if mergeArticle.blank?
+        flash[:error] = "Error: Article ID: '#{params[:id]}' is invalid!"
+        redirect_to '/admin/content'
+        return
+    elsif not mergeArticle[/[^0-9]/].nil?
+        flash[:error] = "Error: Article ID: '#{params[:merge_with]}' has to be a digit!"
+        redirect_to '/admin/content'
+        return
+    elsif Article.find_by_id(params[:merge_with]).blank?
+        flash[:error] = "Error: Article ID: '#{params[:merge_with]}' is not found!"
+        redirect_to '/admin/content'
+        return
+    elsif mergeArticle.merge_with(params[:merge_with])
+        redirect_to '/admin/content'
+        flash[:notice] = "Error: Article '#{params[:merge_with]}' has merged with '#{params[:id]}'"
+    else
+        redirect_to '/admin/content'
+        flash[:error] = "Error: Try again!"
+    end
+  end
+
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip
     render :inline => "<%= raw auto_complete_result @items, 'name' %>"

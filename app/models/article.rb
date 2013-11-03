@@ -71,6 +71,25 @@ class Article < Content
     end
   end
 
+  def merge_with(mergeID)
+
+    mergeArticle = Article.find_by_id(mergeID)
+
+    if not self.id or not mergeArticle.id
+      return false
+    end
+    
+    self.body += mergeArticle.body
+    self.comments << mergeArticle.comments
+    self.save!
+
+    mergeArticle = Article.find_by_id(mergeID)
+
+    mergeArticle.destroy
+
+    return true
+  end
+
   def set_permalink
     return if self.state == 'draft'
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?
