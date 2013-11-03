@@ -23,3 +23,17 @@ Given /I am logged in with username "(.*?)" and password "(.*?)"$/ do |username,
   click_button 'Login'
   assert page.has_content? 'Login successful'
 end
+
+Given /after merging articles "(\d+)" and "(\d+)"$/ do |id1, id2|
+  article = Article.find_by_id(id1)
+  article.merge_with(id2)
+end
+
+Then /the author of Article "(\d+)" should (not )?be "(.*?)"/ do |id, notAuthor, author|
+  article = Article.find_by_id(id)
+  if notAuthor == "not "
+    assert article.author != author
+  else
+    assert article.author == author
+  end 
+end
