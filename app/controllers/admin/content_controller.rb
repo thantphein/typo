@@ -32,7 +32,8 @@ class Admin::ContentController < Admin::BaseController
         return
     elsif mergeArticle.merge_with(params[:merge_with])
         redirect_to '/admin/content'
-        flash[:notice] = "Error: Article '#{params[:merge_with]}' has merged with '#{params[:id]}'"
+	flash[:notice] = "Articles successfully merged!"        
+	#flash[:notice] = "Article '#{params[:merge_with]}' has merged with '#{params[:id]}'"
     else
         redirect_to '/admin/content'
         flash[:error] = "Error: Try again!"

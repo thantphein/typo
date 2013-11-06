@@ -1,0 +1,9 @@
+<% if current_user.admin? and not params[:id].nil? %>
+  <%= form_tag :action => "merge", :id => @article.id do %>
+      <h4>Merge Articles</h4>
+      <p>Article ID</p>
+      <%= text_field_tag "merge_with" %>
+      <%= submit_tag "Merge"%>
+  <% end %>
+<% end %>
+
